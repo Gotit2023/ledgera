@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16A34A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ledgera">
+<meta name="description" content="POS Angola certificado AGT — Ledgera V1">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>Ledgera V1</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8FAFC;--card:#fff;--nav-bg:#111827;--green:#16A34A;--green-dark:#15803D;
+  --green-light:#F0FDF4;--green-border:#BBF7D0;--border:#E5E7EB;--border2:#D1D5DB;
+  --text:#111827;--text2:#374151;--text3:#6B7280;--text4:#9CA3AF;
+  --danger:#DC2626;--warn:#D97706;--warn-bg:#FFFBEB;--warn-border:#FCD34D;
+  --info:#2563EB;--info-bg:#EFF6FF;--info-border:#BFDBFE;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);
+  --sh-g:0 4px 16px rgba(22,163,74,.28);
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);font-size:13px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;height:100dvh;overflow:hidden;width:100%}
+
+/* ── LEFT NAV ── */
+.nav{width:64px;background:var(--nav-bg);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:4px;flex-shrink:0;z-index:200}
+.nav-logo{width:38px;height:38px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:var(--sh-g);cursor:pointer}
+.nav-btn{width:44px;height:44px;border-radius:10px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,0.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:all .18s;position:relative}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-btn.active{background:rgba(22,163,74,.18);color:var(--green)}
+.nav-btn svg{width:18px;height:18px;stroke-width:1.8}
+.nav-btn span{font-size:9px;font-weight:600;letter-spacing:.3px}
+.nav-divider{width:28px;height:1px;background:rgba(255,255,255,.08);margin:8px 0}
+.nav-spacer{flex:1}
+/* PWA install badge */
+.nav-install{width:44px;height:44px;border-radius:10px;border:1px solid rgba(22,163,74,.35);background:rgba(22,163,74,.1);cursor:pointer;color:var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:all .18s;display:none}
+.nav-install.show{display:flex}
+.nav-install:hover{background:rgba(22,163,74,.2)}
+.nav-install span{font-size:9px;font-weight:600}
+
+/* ── MAIN ── */
+.main-area{flex:1;display:grid;grid-template-columns:1fr 370px;overflow:hidden;min-width:0}
+.content{overflow-y:auto;display:flex;flex-direction:column;min-width:0}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:100;gap:12px;min-width:0}
+.page-title{font-size:15px;font-weight:800;color:var(--text)}
+.page-sub{font-size:11px;color:var(--text4);margin-top:1px}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-md);padding:7px 12px;width:200px;flex-shrink:1;min-width:100px;transition:all .18s}
+.search-bar:focus-within{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.search-bar svg{color:var(--text4);flex-shrink:0}
+.search-bar input{border:none;background:none;outline:none;font-family:var(--font);font-size:13px;color:var(--text);width:100%}
+.search-bar input::placeholder{color:var(--text4)}
+.topbar-pills{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.pill{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;font-family:var(--mono);white-space:nowrap}
+.pill-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+.pill-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.pill-info{background:var(--info-bg);color:var(--info);border:1px solid var(--info-border)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--green-light);border:2px solid var(--green-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--green);cursor:pointer;flex-shrink:0}
+
+/* ── PANELS ── */
+.panel{display:none;padding:20px;flex-direction:column;gap:18px;width:100%;min-width:0}
+.panel.active{display:flex}
+
+/* ── QUICK ACTIONS ── */
+.qa-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.qa-btn{display:flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-md);padding:9px 14px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;color:var(--text2);transition:all .18s;box-shadow:var(--sh-sm);white-space:nowrap}
+.qa-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-light);transform:translateY(-1px);box-shadow:var(--sh-md)}
+.qa-btn svg{width:14px;height:14px}
+.qa-btn.scan-live{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:700}
+.qa-btn.scan-live .scan-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:dot-pulse 1.2s infinite}
+@keyframes dot-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ── SECTION ── */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-size:14px;font-weight:700;color:var(--text)}
+.sec-sub{font-size:11px;color:var(--text4);font-weight:500}
+
+/* ── PRODUCT GRID ── */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px;width:100%}
+.prod-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:13px 8px 11px;cursor:pointer;text-align:center;transition:all .18s;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.prod-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);transform:scaleX(0);transition:transform .18s;transform-origin:left}
+.prod-card:hover{border-color:var(--green);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.prod-card:hover::before{transform:scaleX(1)}
+.prod-card:active{transform:scale(.96)}
+.prod-icon{font-size:24px;display:block;margin-bottom:7px;line-height:1}
+.prod-cat{font-size:9px;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.prod-name{font-size:11px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3}
+.prod-price{font-size:12px;font-weight:700;color:var(--green);font-family:var(--mono)}
+
+/* ── ADD ITEM CARD ── */
+.add-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:18px;box-shadow:var(--sh-sm)}
+.add-card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.add-card-title svg{color:var(--green)}
+.input-row{display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap}
+.field{flex:1}
+.field label{font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.field input,.field select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-md);padding:10px 11px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;transition:all .18s;font-weight:500}
+.field input:focus,.field select:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.field input::placeholder{color:var(--text4);font-weight:400}
+.add-btn{width:40px;height:40px;flex-shrink:0;background:var(--green);color:#fff;border:none;border-radius:var(--r-md);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .18s;box-shadow:var(--sh-g);font-weight:700;line-height:1}
+.add-btn:hover{background:var(--green-dark);transform:scale(1.06)}
+
+/* ── HISTORY ── */
+.hist-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
+.hist-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.hist-row:last-child{border-bottom:none}
+.hist-row:hover{background:var(--green-light)}
+.hist-icon{width:34px;height:34px;border-radius:9px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hist-icon svg{width:15px;height:15px;color:var(--green)}
+.hist-no{font-family:var(--mono);font-size:12px;color:var(--green);font-weight:500}
+.hist-date{font-size:11px;color:var(--text4);margin-top:1px}
+
+/* ── RULES ── */
+.rules-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
+.rule-item{display:flex;gap:11px;padding:11px 16px;border-bottom:1px solid var(--border);align-items:flex-start}
+.rule-item:last-child{border-bottom:none}
+.rule-dot{width:20px;height:20px;border-radius:6px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.rule-dot span{font-size:9px;font-weight:700;color:var(--green);font-family:var(--mono)}
+.tl-row{display:flex;gap:13px;padding:11px 16px;border-bottom:1px solid var(--border);align-items:flex-start}
+.tl-row:last-child{border-bottom:none}
+.tl-badge{font-family:var(--mono);font-size:10px;font-weight:500;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.tl-done{background:var(--green-light);color:var(--green)}
+.tl-next{background:var(--warn-bg);color:var(--warn)}
+
+/* ── SETTINGS ── */
+.settings-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh-sm)}
+.settings-sec-title{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:13px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+
+/* ══════════════════════════════
+   CHECKOUT SIDEBAR
+══════════════════════════════ */
+.checkout{background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-width:0;width:100%}
+.co-header{padding:15px 18px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.co-title{font-size:15px;font-weight:800;color:var(--text)}
+.co-count{font-size:11px;font-weight:600;color:var(--text4);background:var(--bg);padding:3px 9px;border-radius:20px;border:1px solid var(--border);font-family:var(--mono)}
+.clear-btn{font-size:11px;font-weight:600;background:none;border:1.5px solid var(--border);color:var(--text4);padding:5px 11px;border-radius:var(--r-sm);cursor:pointer;transition:all .15s}
+.clear-btn:hover{border-color:var(--danger);color:var(--danger);background:#FEF2F2}
+
+/* cart scroll */
+.cart-scroll{flex:1;overflow-y:auto;min-height:80px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 16px;color:var(--text4);font-size:12px;gap:10px;text-align:center}
+.cart-empty-icon{width:52px;height:52px;border-radius:14px;background:var(--bg);border:1.5px dashed var(--border2);display:flex;align-items:center;justify-content:center}
+.cart-item{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .12s;animation:fadeIn .15s ease}
+.cart-item:hover{background:var(--bg)}
+.cart-item:last-child{border-bottom:none}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.ci-icon{width:32px;height:32px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ci-name{flex:1;font-size:12px;font-weight:600;color:var(--text);line-height:1.3}
+.ci-unit{font-size:10px;color:var(--text4);font-family:var(--mono)}
+.qty-ctrl{display:flex;align-items:center;gap:5px}
+.qty-btn{width:24px;height:24px;border-radius:7px;background:var(--bg);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .12s;font-weight:700;line-height:1}
+.qty-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.qty-num{font-size:12px;font-weight:700;min-width:20px;text-align:center;color:var(--text);font-family:var(--mono)}
+.ci-total{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);min-width:70px;text-align:right}
+
+/* client */
+.client-section{padding:12px 18px;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.client-row{display:flex;gap:8px}
+.client-field{flex:1}
+.client-field label{font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.client-field input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;font-size:12px;color:var(--text);font-family:var(--font);outline:none;transition:all .15s}
+.client-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.client-field input::placeholder{color:var(--text4)}
+
+/* totals */
+.totals-block{padding:13px 18px;border-top:1px solid var(--border);flex-shrink:0}
+.tot-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12px;color:var(--text3);font-weight:500}
+.tot-row .val{font-family:var(--mono);color:var(--text2)}
+.total-grand{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--green-light);border-top:2px solid var(--green-border);flex-shrink:0}
+.tg-label{font-size:12px;font-weight:700;color:var(--green-dark)}
+.tg-amount{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--green);letter-spacing:-.5px}
+
+/* payment methods */
+.pay-section{padding:12px 18px 4px;border-top:1px solid var(--border);flex-shrink:0}
+.pay-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.pay-methods{display:flex;gap:6px}
+.pm{flex:1;padding:8px 4px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg);font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;transition:all .15s;line-height:1.4}
+.pm:hover{border-color:var(--green);color:var(--green);background:var(--green-light)}
+.pm.selected{border-color:var(--green);background:var(--green-light);color:var(--green-dark);box-shadow:0 0 0 2px rgba(22,163,74,.15)}
+.pm-icon{font-size:15px;display:block;margin-bottom:2px}
+
+/* CTA */
+.cta-section{padding:12px 18px 16px;flex-shrink:0}
+.btn-pay{width:100%;padding:15px;background:var(--green);color:#fff;border:none;border-radius:var(--r-lg);font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:var(--sh-g);position:relative;overflow:hidden}
+.btn-pay:hover:not(:disabled){background:var(--green-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.38)}
+.btn-pay:active:not(:disabled){transform:none}
+.btn-pay:disabled{background:var(--border2);color:var(--text4);cursor:not-allowed;box-shadow:none}
+
+/* ══════════════════════════════
+   SCANNER OVERLAY
+══════════════════════════════ */
+.scan-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:3000;align-items:center;justify-content:center;padding:16px}
+.scan-overlay.open{display:flex}
+.scan-shell{width:100%;max-width:440px;background:#111827;border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:popIn .22s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:none}}
+
+/* scanner topbar */
+.scan-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.scan-title{font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;gap:9px}
+.scan-icon{width:32px;height:32px;border-radius:9px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.35);display:flex;align-items:center;justify-content:center}
+.scan-close{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.scan-close:hover{background:rgba(255,255,255,.15);color:#fff}
+
+/* context badge — shows why scanner opened */
+.scan-context{padding:8px 18px;background:rgba(22,163,74,.08);border-bottom:1px solid rgba(22,163,74,.15);font-size:11px;color:rgba(22,163,74,.9);font-weight:600;display:flex;align-items:center;gap:7px}
+.scan-context.hidden{display:none}
+
+/* camera */
+.scan-viewport{position:relative;width:100%;aspect-ratio:4/3;background:#000;overflow:hidden}
+#scanVideo{width:100%;height:100%;object-fit:cover;display:block}
+.scan-veil{position:absolute;inset:0;background:radial-gradient(ellipse 260px 180px at center,transparent,rgba(0,0,0,.5));pointer-events:none}
+.scan-frame-box{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.scan-box{width:220px;height:130px;position:relative}
+.scan-box::before,.scan-box::after,.sc-br,.sc-bl{content:'';position:absolute;width:26px;height:26px;border-color:#16A34A;border-style:solid}
+.scan-box::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.scan-box::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.sc-br{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.sc-bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.scan-line{position:absolute;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,#16A34A,transparent);animation:sweep 1.8s ease-in-out infinite;box-shadow:0 0 8px rgba(22,163,74,.8)}
+@keyframes sweep{0%{top:10%;opacity:0}8%{opacity:1}92%{opacity:1}100%{top:90%;opacity:0}}
+.scan-paused .scan-line{animation:none;opacity:0}
+
+/* permission */
+.scan-perm{display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px 20px;text-align:center;background:#0d1117;min-height:180px}
+.scan-perm.show{display:flex}
+.scan-perm svg{color:rgba(255,255,255,.2)}
+.scan-perm-title{font-size:14px;font-weight:700;color:#fff}
+.scan-perm-sub{font-size:12px;color:rgba(255,255,255,.45);max-width:260px;line-height:1.6}
+.scan-perm-btn{padding:11px 24px;background:var(--green);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer}
+
+/* status */
+.scan-status{padding:12px 18px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.07)}
+.scan-dot{width:8px;height:8px;border-radius:50%;background:#4B5563;flex-shrink:0;transition:background .3s}
+.scan-dot.active{background:var(--green);box-shadow:0 0 6px rgba(22,163,74,.7);animation:sdpulse 1.4s infinite}
+.scan-dot.ok{background:var(--green);box-shadow:0 0 10px rgba(22,163,74,.9)}
+.scan-dot.err{background:var(--danger)}
+@keyframes sdpulse{0%,100%{opacity:1}50%{opacity:.35}}
+.scan-status-text{font-size:12px;color:rgba(255,255,255,.65);font-weight:500;flex:1}
+.scan-status-text strong{color:#fff}
+
+/* result */
+.scan-result{display:none;padding:14px 18px;background:rgba(22,163,74,.07);border-top:1px solid rgba(22,163,74,.18);animation:fadeIn .2s ease}
+.scan-result.show{display:block}
+.sr-prod{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.sr-emo{font-size:30px;line-height:1}
+.sr-info .sr-name{font-size:15px;font-weight:700;color:#fff}
+.sr-info .sr-cat{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
+.sr-info .sr-price{font-size:17px;font-weight:700;color:#16A34A;font-family:var(--mono);margin-top:3px}
+.sr-info .sr-bc{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.25)}
+.sr-add{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:11px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;box-shadow:0 4px 14px rgba(22,163,74,.4)}
+.sr-add:hover{background:var(--green-dark)}
+
+/* not found */
+.scan-nf{display:none;padding:14px 18px;background:rgba(220,38,38,.07);border-top:1px solid rgba(220,38,38,.18)}
+.scan-nf.show{display:block}
+.scan-nf-title{font-size:13px;font-weight:700;color:#FCA5A5;margin-bottom:4px}
+.scan-nf-sub{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5}
+
+/* manual */
+.scan-manual{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07)}
+.scan-manual-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.scan-manual-row{display:flex;gap:7px}
+.scan-manual-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:9px;padding:9px 12px;font-family:var(--mono);font-size:14px;color:#fff;outline:none;letter-spacing:1px;transition:border-color .15s}
+.scan-manual-input:focus{border-color:var(--green);background:rgba(22,163,74,.08)}
+.scan-manual-input::placeholder{color:rgba(255,255,255,.2);font-family:var(--font);font-size:12px;letter-spacing:0}
+.scan-manual-btn{padding:9px 15px;background:var(--green);color:#fff;border:none;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+.scan-manual-btn:hover{background:var(--green-dark)}
+
+/* footer */
+.scan-footer{padding:12px 18px;display:flex;gap:7px;border-top:1px solid rgba(255,255,255,.07)}
+.sf-btn{flex:1;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.55);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:5px}
+.sf-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.sf-btn.danger:hover{background:rgba(220,38,38,.15);border-color:rgba(220,38,38,.3);color:#FCA5A5}
+.sf-btn svg{width:13px;height:13px}
+
+/* ══════════════════════════════
+   INVOICE MODAL
+══════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(17,24,39,.6);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:18px}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--r-xl);width:100%;max-width:490px;max-height:92vh;overflow-y:auto;box-shadow:0 25px 80px rgba(0,0,0,.2);animation:popIn .22s cubic-bezier(.34,1.56,.64,1)}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-ok-icon{width:38px;height:38px;border-radius:11px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.modal-ok-icon svg{width:20px;height:20px;color:var(--green);stroke-width:2.5}
+.modal-title{font-size:15px;font-weight:800;color:var(--text)}
+.modal-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.modal-body{padding:18px 22px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:9px}
+.btn-ghost{flex:1;padding:11px;border:1.5px solid var(--border);border-radius:var(--r-md);background:none;color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--font);font-weight:600;transition:all .15s}
+.btn-ghost:hover{background:var(--bg)}
+.btn-primary{flex:2;padding:11px;border:none;border-radius:var(--r-md);background:var(--green);color:#fff;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:700;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-sec{flex:1.4;padding:11px;border:1.5px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--font);font-weight:600;transition:all .15s}
+.btn-sec:hover{background:var(--border)}
+
+/* receipt */
+.receipt{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px 18px;font-family:var(--mono);font-size:11.5px;line-height:1.85}
+.rh{text-align:center;margin-bottom:14px}
+.rh-logo{font-family:var(--font);font-size:21px;font-weight:800;color:var(--text)}
+.rh-logo span{color:var(--green)}
+.rh-sub{font-size:9.5px;color:var(--text4);font-family:var(--font)}
+.r-div{border:none;border-top:1px dashed var(--border2);margin:10px 0}
+.r-sec{font-size:9px;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin:10px 0 3px;font-weight:600;font-family:var(--font)}
+.r-row{display:flex;justify-content:space-between}
+.r-row.bold{font-weight:700;font-size:13px;color:var(--text)}
+.r-row.green{color:var(--green);font-weight:700}
+.r-agt{background:var(--green-light);border:1.5px solid var(--green-border);border-radius:var(--r-sm);padding:8px 12px;text-align:center;margin:12px 0 6px;color:var(--green-dark);font-size:11px;font-weight:600;font-family:var(--font)}
+.r-foot{text-align:center;font-size:9px;color:var(--text4);margin-top:10px;line-height:1.7;font-family:var(--font)}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(18px);background:var(--text);color:#fff;padding:11px 22px;border-radius:28px;font-weight:700;font-size:12px;opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(0,0,0,.15);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════════
+   PWA INSTALL BANNER
+══════════════════════════════ */
+.install-banner{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);border-top:1px solid rgba(255,255,255,.1);padding:14px 18px;z-index:1500;align-items:center;gap:12px}
+.install-banner.show{display:flex}
+.ib-icon{width:40px;height:40px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ib-text{flex:1}
+.ib-title{font-size:13px;font-weight:700;color:#fff}
+.ib-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px}
+.ib-btn{padding:9px 18px;background:var(--green);color:#fff;border:none;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ib-dismiss{padding:9px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:16px}
+
+
+/* ══════════════════════════════════════════
+   FISCAL CALENDAR
+══════════════════════════════════════════ */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.cal-year-badge{font-family:var(--mono);font-size:12px;font-weight:500;padding:5px 12px;background:var(--green-light);border:1px solid var(--green-border);border-radius:20px;color:var(--green-dark)}
+
+/* summary row */
+.cal-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.cal-sum-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;box-shadow:var(--sh-sm);text-align:center}
+.cal-sum-card.urgent{border-color:var(--danger);background:#FEF2F2}
+.cal-sum-card.soon{border-color:var(--warn-border);background:var(--warn-bg)}
+.cal-sum-card.ok{border-color:var(--green-border);background:var(--green-light)}
+.cal-sum-icon{font-size:22px;margin-bottom:6px}
+.cal-sum-num{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1}
+.cal-sum-num.urgent{color:var(--danger)}
+.cal-sum-num.soon{color:var(--warn)}
+.cal-sum-num.ok{color:var(--green)}
+.cal-sum-lbl{font-size:10px;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+/* timeline */
+.cal-months{display:flex;flex-direction:column;gap:0}
+.cal-month-group{margin-bottom:18px}
+.cal-quarter-label{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding:0 2px;display:flex;align-items:center;gap:8px}
+.cal-quarter-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.cal-event{display:flex;align-items:flex-start;gap:14px;padding:13px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);margin-bottom:8px;box-shadow:var(--sh-sm);transition:all .15s;cursor:default;position:relative;overflow:hidden}
+.cal-event::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.cal-event.status-done::before{background:var(--green)}
+.cal-event.status-urgent::before{background:var(--danger)}
+.cal-event.status-soon::before{background:var(--warn)}
+.cal-event.status-future::before{background:var(--border2)}
+.cal-event:hover{transform:translateY(-1px);box-shadow:var(--sh-md)}
+.cal-event.status-done{opacity:.65}
+
+/* date box */
+.cal-date-box{min-width:48px;text-align:center;flex-shrink:0}
+.cal-date-day{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--text);line-height:1}
+.cal-date-month{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.cal-event.status-urgent .cal-date-day{color:var(--danger)}
+.cal-event.status-soon .cal-date-day{color:var(--warn)}
+.cal-event.status-done .cal-date-day{color:var(--green)}
+
+/* event info */
+.cal-event-body{flex:1;min-width:0}
+.cal-event-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.cal-event-sub{font-size:11px;color:var(--text3);line-height:1.5}
+.cal-event-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.cal-tag{font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px}
+.cal-tag-agt{background:var(--info-bg);color:var(--info);border:1px solid var(--info-border)}
+.cal-tag-iva{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-border)}
+.cal-tag-saft{background:#FDF4FF;color:#7C3AED;border:1px solid #E9D5FF}
+.cal-tag-inv{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.cal-tag-irt{background:#FFF1F2;color:#BE123C;border:1px solid #FECDD3}
+.cal-tag-done{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+
+/* countdown badge */
+.cal-countdown{flex-shrink:0;text-align:right;min-width:52px}
+.cal-cd-num{font-family:var(--mono);font-size:14px;font-weight:500;line-height:1}
+.cal-cd-lbl{font-size:9px;color:var(--text4);font-weight:600;margin-top:2px}
+.cal-cd-done{font-size:18px}
+.cal-cd-num.urgent{color:var(--danger)}
+.cal-cd-num.soon{color:var(--warn)}
+.cal-cd-num.future{color:var(--text4)}
+
+/* alert box */
+.cal-alert{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r-lg);margin-bottom:18px;border:1.5px solid;align-items:flex-start}
+.cal-alert.danger{background:#FEF2F2;border-color:#FECACA}
+.cal-alert.warn{background:var(--warn-bg);border-color:var(--warn-border)}
+.cal-alert.info{background:var(--info-bg);border-color:var(--info-border)}
+.cal-alert-icon{font-size:20px;flex-shrink:0;line-height:1;margin-top:1px}
+.cal-alert-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.cal-alert.danger .cal-alert-title{color:var(--danger)}
+.cal-alert.warn .cal-alert-title{color:var(--warn)}
+.cal-alert.info .cal-alert-title{color:var(--info)}
+.cal-alert-sub{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.btn-skip{width:100%;margin-top:7px;padding:10px;background:none;border:1.5px solid var(--border);border-radius:var(--r-md);color:var(--text3);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-skip:hover{border-color:var(--green);color:var(--green);background:var(--green-light)}
+/* ── PRINT ── */
+@media print{body *{visibility:hidden!important}#printArea,#printArea *{visibility:visible!important}#printArea{position:fixed!important;top:0!important;left:0!important;width:80mm!important;background:#fff!important;padding:8mm!important;font-family:'Courier New',monospace!important;font-size:10pt!important;color:#000!important}}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo" title="Ledgera V1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+    </div>
+    <button class="nav-btn active" onclick="switchPanel('pos',this)" title="Venda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span>Venda</span>
+    </button>
+    <button class="nav-btn" onclick="switchPanel('history',this)" title="Facturas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      <span>Docs</span>
+    </button>
+    <button class="nav-btn" onclick="switchPanel('rules',this)" title="AGT">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>AGT</span>
+    </button>
+    <button class="nav-btn" onclick="switchPanel('calendar',this)" title="Calendário Fiscal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Fiscal</span>
+    </button>
+    <div class="nav-spacer"></div>
+    <div class="nav-divider"></div>
+    <button class="nav-install" id="navInstall" onclick="installPWA()" title="Instalar App">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>App</span>
+    </button>
+    <button class="nav-btn" onclick="switchPanel('settings',this)" title="Config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/><circle cx="12" cy="12" r="10"/></svg>
+      <span>Config</span>
+    </button>
+  </nav>
+
+  <div class="main-area">
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <div class="topbar">
+        <div>
+          <div class="page-title" id="pageTitle">Ponto de Venda</div>
+          <div class="page-sub" id="pageSub">Seleccione produtos ou leia o código de barras</div>
+        </div>
+        <div class="search-bar" id="searchWrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Pesquisar produto..." oninput="filterProducts()">
+        </div>
+        <div class="topbar-pills">
+          <span class="pill pill-green" id="topSerie">AGT: FT/2026</span>
+          <span class="pill pill-warn">⏳ Set 2026</span>
+          <div class="avatar">LD</div>
+        </div>
+      </div>
+
+      <!-- POS -->
+      <div class="panel active" id="panelPos">
+        <div class="qa-row">
+          <button class="qa-btn scan-live" onclick="openScanner('manual')">
+            <div class="scan-pulse"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>
+            Ler Código de Barras
+          </button>
+          <button class="qa-btn" onclick="document.getElementById('searchInput').focus()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Pesquisar
+          </button>
+          <button class="qa-btn" onclick="document.getElementById('customName').focus()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Item
+          </button>
+          <button class="qa-btn" onclick="switchPanel('history',document.querySelectorAll('.nav-btn')[1])">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Recentes
+          </button>
+        </div>
+
+        <div>
+          <div class="sec-header">
+            <span class="sec-title">Produtos Rápidos</span>
+            <span class="sec-sub" id="prodCount">12 produtos</span>
+          </div>
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <div class="add-card">
+          <div class="add-card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar Item
+          </div>
+          <div class="input-row" style="margin-bottom:10px">
+            <div class="field" style="flex:2"><label>Produto / Serviço</label><input type="text" id="customName" placeholder="Ex: Cerveja Cuca 33cl"></div>
+            <div class="field" style="flex:1"><label>Preço (Kz)</label><input type="number" id="customPrice" placeholder="0" min="0"></div>
+            <div style="padding-top:21px"><button class="add-btn" onclick="addCustom()">+</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="panel" id="panelHistory">
+        <div class="hist-card">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span class="sec-title">Histórico de Facturas</span>
+            <span class="pill pill-green" id="histCount">0 emitidas</span>
+          </div>
+          <div id="historyList"><div style="padding:36px;text-align:center;color:var(--text4);font-size:13px">Nenhuma factura emitida ainda</div></div>
+        </div>
+      </div>
+
+      <!-- RULES -->
+      <div class="panel" id="panelRules">
+        <div class="rules-card">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span class="sec-title">Obrigações AGT — Decreto 71/25</span>
+            <span class="pill pill-warn">Set 2026</span>
+          </div>
+          <div id="rulesList"></div>
+        </div>
+        <div class="rules-card">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border)"><span class="sec-title">Calendário</span></div>
+          <div id="timeline"></div>
+        </div>
+      </div>
+
+      <!-- FISCAL CALENDAR -->
+      <div class="panel" id="panelCalendar">
+        <div id="calAlerts"></div>
+        <div class="cal-summary" id="calSummary"></div>
+        <div id="calBody"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="panelSettings">
+        <div class="settings-card">
+          <div class="settings-sec-title">Identificação Fiscal</div>
+          <div class="input-row" style="flex-wrap:wrap;gap:10px;margin-bottom:10px">
+            <div class="field"><label>Nome da Empresa</label><input type="text" id="setName" value="Loja Demo Lda." oninput="saveSettings()"></div>
+            <div class="field"><label>NIF</label><input type="text" id="setNIF" value="5006482001" oninput="saveSettings()"></div>
+          </div>
+          <div class="field"><label>Endereço</label><input type="text" id="setAddr" value="Rua de Luanda 45, Luanda" oninput="saveSettings()"></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-sec-title">Configuração AGT</div>
+          <div class="input-row" style="gap:10px">
+            <div class="field"><label>Regime IVA</label>
+              <select id="setVAT" onchange="saveSettings()">
+                <option value="geral">Regime Geral — IVA 14%</option>
+                <option value="simplificado">Regime Simplificado</option>
+                <option value="isento">Isento de IVA</option>
+              </select>
+            </div>
+            <div class="field"><label>Série AGT</label><input type="text" id="setSerie" value="FT/2026" oninput="saveSettings()"></div>
+          </div>
+          <div style="background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--r-md);padding:11px 13px;font-size:11.5px;color:var(--info);margin-top:13px;line-height:1.6">
+            ℹ Em produção, série e software devem ser certificados pela AGT. Este demo simula esse processo.
+          </div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-sec-title">Código de Barras — Base de Dados</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6">Produtos registados com códigos EAN-13. Em produção, pode importar via CSV ou ligar ao seu fornecedor.</div>
+          <div id="barcodeList"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <!-- ══ CHECKOUT ══ -->
+    <div class="checkout">
+      <div class="co-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="co-title">Carrinho</div>
+          <div class="co-count" id="cartCount">0 itens</div>
+        </div>
+        <button class="clear-btn" onclick="clearCart()">Limpar</button>
+      </div>
+
+      <div class="cart-scroll" id="cartItems">
+        <div class="cart-empty">
+          <div class="cart-empty-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          </div>
+          <strong>Carrinho vazio</strong>
+          <div>Clique num produto ou leia o código de barras</div>
+        </div>
+      </div>
+
+      <div class="client-section">
+        <div class="client-row">
+          <div class="client-field"><label>NIF Cliente</label><input type="text" id="clientNIF" placeholder="Consumidor Final"></div>
+          <div class="client-field"><label>Nome Cliente</label><input type="text" id="clientName" placeholder="Consumidor Final"></div>
+        </div>
+      </div>
+
+      <div class="totals-block">
+        <div class="tot-row"><span>Subtotal (s/ IVA)</span><span class="val" id="subtotalVal">0,00 Kz</span></div>
+        <div class="tot-row" style="margin-top:3px"><span id="vatLabel">IVA 14%</span><span class="val" id="vatVal">0,00 Kz</span></div>
+      </div>
+
+      <div class="total-grand">
+        <span class="tg-label">TOTAL A PAGAR</span>
+        <span class="tg-amount" id="totalVal">0,00 Kz</span>
+      </div>
+
+      <div class="pay-section">
+        <div class="pay-label">Método de Pagamento</div>
+        <div class="pay-methods">
+          <button class="pm selected" onclick="selectPay(this,'Dinheiro')"><span class="pm-icon">💵</span>Dinheiro</button>
+          <button class="pm" id="pmMulticaixa" onclick="selectPay(this,'Multicaixa')"><span class="pm-icon">📱</span>Multicaixa<span style="display:block;font-size:8px;color:inherit;opacity:.7;margin-top:1px">+ Scanner</span></button>
+          <button class="pm" onclick="selectPay(this,'Transferência')"><span class="pm-icon">🏦</span>Transfer.</button>
+          <button class="pm" onclick="selectPay(this,'Crédito')"><span class="pm-icon">💳</span>Crédito</button>
+        </div>
+      </div>
+      <div id="scanHint" style="display:none;margin:0 18px 4px;padding:8px 12px;background:var(--green-light);border:1px solid var(--green-border);border-radius:var(--r-sm);font-size:11px;color:var(--green-dark);font-weight:600;display:flex;align-items:center;gap:7px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>
+        Multicaixa activa — o scanner irá abrir automaticamente
+      </div>
+
+      <div class="cta-section">
+        <button class="btn-pay" id="payBtn" onclick="startPaymentFlow()" disabled>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>
+          Ler Produtos + Emitir Factura
+        </button>
+        <button class="btn-skip" id="skipScanBtn" onclick="processPayment()" style="display:none">
+          Emitir Factura sem Leitura
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /main-area -->
+</div><!-- /shell -->
+
+<!-- ═══ SCANNER MODAL ═══ -->
+<div class="scan-overlay" id="scanOverlay">
+  <div class="scan-shell">
+
+    <div class="scan-topbar">
+      <div class="scan-title">
+        <div class="scan-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>
+        </div>
+        Leitor de Código de Barras
+      </div>
+      <button class="scan-close" onclick="closeScanner()">✕</button>
+    </div>
+
+    <!-- Context — why scanner opened -->
+    <div class="scan-context hidden" id="scanContext">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="scanContextText"></span>
+    </div>
+
+    <!-- Viewport -->
+    <div class="scan-viewport" id="scanViewport">
+      <video id="scanVideo" autoplay playsinline muted></video>
+      <canvas id="scanCanvas" style="display:none"></canvas>
+      <div class="scan-veil"></div>
+      <div class="scan-frame-box">
+        <div class="scan-box" id="scanBox">
+          <div class="sc-br"></div><div class="sc-bl"></div>
+          <div class="scan-line"></div>
+        </div>
+      </div>
+      <div class="scan-perm" id="scanPerm">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <div class="scan-perm-title">Câmera necessária</div>
+        <div class="scan-perm-sub">Precisa de acesso à câmera para ler os códigos de barras dos produtos.</div>
+        <button class="scan-perm-btn" onclick="startCamera()">📷 Permitir Câmera</button>
+      </div>
+    </div>
+
+    <div class="scan-status">
+      <div class="scan-dot" id="scanDot"></div>
+      <div class="scan-status-text" id="scanStatusTxt">A iniciar câmera...</div>
+    </div>
+
+    <!-- Result -->
+    <div class="scan-result" id="scanResult">
+      <div class="sr-prod">
+        <div class="sr-emo" id="srEmo">📦</div>
+        <div class="sr-info">
+          <div class="sr-name" id="srName">—</div>
+          <div class="sr-cat"  id="srCat">—</div>
+          <div class="sr-price" id="srPrice">—</div>
+          <div class="sr-bc"   id="srBc">—</div>
+        </div>
+      </div>
+      <button class="sr-add" onclick="addScanned()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar ao Carrinho
+      </button>
+    </div>
+
+    <!-- Not found -->
+    <div class="scan-nf" id="scanNF">
+      <div class="scan-nf-title">⚠ Produto não encontrado</div>
+      <div class="scan-nf-sub">Código <strong id="nfCode">—</strong> não está registado. Adicione abaixo ou vá ao separador Empresa para registar novos produtos.</div>
+    </div>
+
+    <!-- Manual -->
+    <div class="scan-manual">
+      <div class="scan-manual-lbl">Introduzir código manualmente</div>
+      <div class="scan-manual-row">
+        <input type="text" class="scan-manual-input" id="manualInput" placeholder="Ex: 5601006100016" inputmode="numeric" maxlength="20">
+        <button class="scan-manual-btn" onclick="lookupManual()">OK</button>
+      </div>
+    </div>
+
+    <!-- Payment done button — only visible in payment context -->
+    <div id="payDoneBar" style="display:none;padding:12px 18px;border-top:1px solid rgba(22,163,74,.2);background:rgba(22,163,74,.06)">
+      <button onclick="finishPaymentScan()" style="width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:12px;font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(22,163,74,.35);transition:all .15s">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Fechar Leitura e Emitir Factura
+        <span id="payDoneCount" style="background:rgba(255,255,255,.25);padding:2px 8px;border-radius:20px;font-size:11px"></span>
+      </button>
+    </div>
+    <div class="scan-footer">
+      <button class="sf-btn" onclick="toggleTorch()" id="torchBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6c0 4-6 8-6 8S6 10 6 6a6 6 0 1112 0z"/><line x1="12" y1="14" x2="12" y2="22"/></svg>
+        Lanterna
+      </button>
+      <button class="sf-btn" onclick="flipCamera()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+        Virar
+      </button>
+      <button class="sf-btn danger" onclick="closeScanner()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Fechar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ INVOICE MODAL ═══ -->
+<div class="overlay" id="invoiceOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div class="modal-ok-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div><div class="modal-title">Factura Emitida</div><div class="modal-sub">Validada pelo sistema AGT</div></div>
+      </div>
+      <span class="pill pill-green">✓ Válida</span>
+    </div>
+    <div class="modal-body"><div class="receipt" id="invoicePreview"></div></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeInvoice()">Fechar</button>
+      <button class="btn-primary" onclick="printInvoice()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir / PDF
+      </button>
+      <button class="btn-sec" onclick="newSale()">+ Nova Venda</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PWA INSTALL BANNER ═══ -->
+<div class="install-banner" id="installBanner">
+  <div class="ib-icon">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+  </div>
+  <div class="ib-text">
+    <div class="ib-title">Instalar Ledgera</div>
+    <div class="ib-sub">Funciona offline · Ícone no ecrã inicial</div>
+  </div>
+  <button class="ib-btn" onclick="installPWA()">Instalar</button>
+  <button class="ib-dismiss" onclick="dismissInstall()">✕</button>
+</div>
+
+<div id="printArea" style="display:none"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const PRODUCTS = [
+  {name:'Cerveja 33cl',  price:400,  icon:'🍺', cat:'Bebidas',     bc:'5601006100016'},
+  {name:'Água 1,5L',     price:150,  icon:'💧', cat:'Bebidas',     bc:'5601234000012'},
+  {name:'Refrigerante',  price:300,  icon:'🥤', cat:'Bebidas',     bc:'5449000000996'},
+  {name:'Pão de Forma',  price:750,  icon:'🍞', cat:'Alimentação', bc:'5601028000013'},
+  {name:'Arroz 1kg',     price:900,  icon:'🌾', cat:'Mercearia',   bc:'6001255000011'},
+  {name:'Sabão Líq.',    price:1200, icon:'🧴', cat:'Limpeza',     bc:'8710447287415'},
+  {name:'Frango (Kg)',   price:2500, icon:'🍗', cat:'Carnes',      bc:'2000000100016'},
+  {name:'Peixe (Kg)',    price:3000, icon:'🐟', cat:'Peixaria',    bc:'2000000200013'},
+  {name:'Serv.Limpeza',  price:5000, icon:'🧹', cat:'Serviços',    bc:'0000000000000'},
+  {name:'Detergente',    price:850,  icon:'🧼', cat:'Limpeza',     bc:'8001841000014'},
+  {name:'Leite 1L',      price:550,  icon:'🥛', cat:'Lacticínios', bc:'5601028100011'},
+  {name:'Café 250g',     price:1800, icon:'☕', cat:'Mercearia',   bc:'5601028200018'},
+];
+
+const RULES = [
+  'Factura em português com numeração sequencial única',
+  'NIF e nome do vendedor e do comprador obrigatórios',
+  'Data e local de emissão em cada documento fiscal',
+  'Descrição clara dos bens ou serviços prestados',
+  'Valor base, taxa IVA (14%) e total da operação',
+  'Emissão no prazo máximo de 5 dias após a transacção',
+  'Software certificado pela AGT com código de validação',
+  'Ficheiro SAF-T enviado à AGT até 10 de Abril do ano seguinte',
+  'Inventário anual submetido até 15 de Fevereiro',
+  'Documentos conservados pelo prazo do Código Geral Tributário',
+];
+const TIMELINE = [
+  {date:'Jan 2026',desc:'Grandes contribuintes obrigados',done:true},
+  {date:'Mar 2026',desc:'Fim do período soft-landing',done:true},
+  {date:'Set 2026',desc:'TODOS os contribuintes',done:false},
+  {date:'Jan 2027',desc:'Meta final — cobertura total Angola',done:false},
+];
+
+/* build lookup */
+const BC_MAP = {};
+PRODUCTS.forEach((p,i) => { BC_MAP[p.bc] = i; });
+
+let cart=[], invoiceHistory=[], invoiceSeq=1, lastInvoiceHTML='';
+let selectedPay='Dinheiro';
+let settings={name:'Loja Demo Lda.',nif:'5006482001',addr:'Rua de Luanda 45, Luanda',vat:'geral',serie:'FT/2026'};
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+function fmt(n){
+  var num = parseFloat(n);
+  if(isNaN(num)) num = 0;
+  var fixed = num.toFixed(2);
+  var parts = fixed.split('.');
+  var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  return intPart + ',' + parts[1] + ' Kz';
+}
+function genCode(){return 'AGT-'+Math.random().toString(36).slice(2,8).toUpperCase()+'-'+Date.now().toString().slice(-5);}
+function genHash(){return Array.from({length:16},()=>'0123456789ABCDEF'[Math.floor(Math.random()*16)]).join('');}
+function nowStr(){const d=new Date();return[d.getDate(),d.getMonth()+1,d.getFullYear()].map(x=>String(x).padStart(2,'0')).join('/')+' '+[d.getHours(),d.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');}
+
+/* ══════════════════════════════════════════
+   PRODUCTS
+══════════════════════════════════════════ */
+function renderProducts(filter=''){
+  const list=filter?PRODUCTS.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())||p.cat.toLowerCase().includes(filter.toLowerCase())):PRODUCTS;
+  document.getElementById('prodCount').textContent=list.length+' produto'+(list.length!==1?'s':'');
+  document.getElementById('productGrid').innerHTML=list.length===0
+    ?`<div style="grid-column:1/-1;text-align:center;padding:28px;color:var(--text4);font-size:12px">Nenhum produto encontrado</div>`
+    :list.map(p=>{const i=PRODUCTS.indexOf(p);return`<div class="prod-card" onclick="addToCart(${i})"><span class="prod-icon">${p.icon}</span><div class="prod-cat">${p.cat}</div><div class="prod-name">${p.name}</div><div class="prod-price">${fmt(p.price)}</div></div>`;}).join('');
+}
+function filterProducts(){renderProducts(document.getElementById('searchInput').value);}
+
+function addToCart(idx){
+  const p=PRODUCTS[idx];
+  const ex=cart.find(c=>c.idx===idx);
+  if(ex)ex.qty++; else cart.push({idx,name:p.name,price:p.price,icon:p.icon,cat:p.cat,qty:1});
+  renderCart();
+  // micro press
+  document.querySelectorAll('.prod-card')[idx]?.classList.add('pressed');
+  setTimeout(()=>document.querySelectorAll('.prod-card')[idx]?.classList.remove('pressed'),150);
+}
+
+function addCustom(){
+  const n=document.getElementById('customName').value.trim();
+  const p=parseFloat(document.getElementById('customPrice').value)||0;
+  if(!n||p<=0){showToast('⚠ Preencha o nome e o preço');return;}
+  const ex=cart.find(c=>c.name===n&&c.idx===undefined);
+  if(ex)ex.qty++; else cart.push({name:n,price:p,icon:'📦',cat:'Custom',qty:1});
+  document.getElementById('customName').value='';
+  document.getElementById('customPrice').value='';
+  renderCart();
+}
+
+function changeQty(i,d){
+  cart[i].qty+=d;
+  if(cart[i].qty<=0)cart.splice(i,1);
+  renderCart();
+}
+function clearCart(){cart=[];renderCart();}
+
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const total=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cartCount').textContent=total+' item'+(total!==1?'s':'');
+  if(!cart.length){
+    el.innerHTML=`<div class="cart-empty"><div class="cart-empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></div><strong>Carrinho vazio</strong><div>Clique num produto ou leia o código de barras</div></div>`;
+    updateTotals();return;
+  }
+  el.innerHTML=cart.map((c,i)=>`<div class="cart-item"><div class="ci-icon">${c.icon}</div><div style="flex:1"><div class="ci-name">${c.name}</div><div class="ci-unit">${fmt(c.price)} / un.</div></div><div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(${i},-1)">−</button><span class="qty-num">${c.qty}</span><button class="qty-btn" onclick="changeQty(${i},1)">+</button></div><span class="ci-total">${fmt(c.price*c.qty)}</span></div>`).join('');
+  updateTotals();
+}
+
+function updateTotals(){
+  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const vat=settings.vat==='isento'?0:sub*0.14;
+  const tot=sub+vat;
+  document.getElementById('subtotalVal').textContent=fmt(sub);
+  document.getElementById('vatVal').textContent=fmt(vat);
+  document.getElementById('totalVal').textContent=fmt(tot);
+  document.getElementById('vatLabel').textContent=settings.vat==='isento'?'IVA (isento)':'IVA 14%';
+  document.getElementById('payBtn').disabled=cart.length===0;
+}
+
+function selectPay(btn,method){
+  selectedPay=method;
+  document.querySelectorAll('.pm').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updatePayBtn();
+}
+
+function updatePayBtn(){
+  const payBtn = document.getElementById('payBtn');
+  const skipBtn = document.getElementById('skipScanBtn');
+  if(!payBtn) return;
+
+  const hint = document.getElementById('scanHint');
+  if(selectedPay === 'Multicaixa'){
+    // Multicaixa: show scan button
+    payBtn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="10" y1="7" x2="10" y2="17"/><line x1="14" y1="7" x2="14" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg> Ler Código + Emitir Factura`;
+    payBtn.onclick = function(){ startPaymentFlow(); };
+    payBtn.style.background = 'var(--green)';
+    if(skipBtn) skipBtn.style.display = 'block';
+    if(hint) hint.style.display = 'flex';
+  } else {
+    // All other methods: straight to invoice, no scanner
+    payBtn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Emitir Factura AGT`;
+    payBtn.onclick = function(){ processPayment(); };
+    payBtn.style.background = '';
+    if(skipBtn) skipBtn.style.display = 'none';
+    if(hint) hint.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════
+   PAYMENT & INVOICE
+══════════════════════════════════════════ */
+function processPayment(){
+  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const vat=settings.vat==='isento'?0:sub*0.14;
+  const tot=sub+vat;
+  const no=`${settings.serie}/${String(invoiceSeq++).padStart(4,'0')}`;
+  const code=genCode(), hash=genHash(), dt=nowStr();
+  const clientNIF=document.getElementById('clientNIF').value||'Consumidor Final';
+  const clientName=document.getElementById('clientName').value||'Consumidor Final';
+
+  const items=cart.map(c=>`<div class="r-row"><span>${c.icon} ${c.name} ×${c.qty}</span><span>${fmt(c.price*c.qty)}</span></div>`).join('');
+  const vatLine=settings.vat==='isento'?`<div class="r-row"><span>IVA</span><span>Isento</span></div>`:`<div class="r-row"><span>IVA 14%</span><span>${fmt(vat)}</span></div>`;
+
+  const html=`<div class="rh"><div class="rh-logo">Ledgera<span>.</span></div><div class="rh-sub">Software de Facturação Certificado AGT</div></div>
+<hr class="r-div">
+<div class="r-sec">Emitente</div><div>${settings.name}</div><div>NIF: ${settings.nif}</div><div style="color:var(--text3)">${settings.addr}</div>
+<hr class="r-div">
+<div class="r-sec">Cliente</div><div>${clientName}</div><div style="color:var(--text3)">NIF: ${clientNIF}</div>
+<hr class="r-div">
+<div class="r-sec">Documento</div>
+<div class="r-row bold"><span>${no}</span><span>${dt}</span></div>
+<div class="r-row" style="color:var(--text3)"><span>Pagamento</span><span>${selectedPay}</span></div>
+<hr class="r-div">
+<div class="r-sec">Itens</div>${items}
+<hr class="r-div">
+<div class="r-row" style="color:var(--text3)"><span>Subtotal</span><span>${fmt(sub)}</span></div>${vatLine}
+<div class="r-row green" style="font-size:14px;margin-top:4px"><span>TOTAL</span><span>${fmt(tot)}</span></div>
+<div class="r-agt">✓ Código AGT: ${code}</div>
+<div class="r-row" style="font-size:9px;color:var(--text4)"><span>Hash: ${hash}</span><span>${settings.vat}</span></div>
+<div class="r-foot">Emitido por software certificado AGT<br>Decreto Presidencial Nº 71/25 — Série ${settings.serie}<br>Conserve este documento pelo prazo legal</div>`;
+
+  lastInvoiceHTML=html;
+  document.getElementById('invoicePreview').innerHTML=html;
+  document.getElementById('invoiceOverlay').classList.add('open');
+  invoiceHistory.unshift({no,dt,total:tot,code,html});
+  showToast('✓ Factura '+no+' emitida!');
+}
+
+function printInvoice(){
+  const pa=document.getElementById('printArea');
+  pa.innerHTML=`<style>body{font-family:'Courier New',monospace;font-size:10pt;background:#fff;color:#000}.rh{text-align:center;margin-bottom:12px}.rh-logo{font-size:18pt;font-weight:900}.rh-logo span{color:#16A34A}.rh-sub{font-size:8pt;color:#888}.r-div{border:none;border-top:1px dashed #ccc;margin:8px 0}.r-row{display:flex;justify-content:space-between}.r-row.bold{font-weight:700}.r-row.green{font-weight:700;color:#16A34A;font-size:12pt}.r-sec{font-size:7pt;color:#16A34A;text-transform:uppercase;letter-spacing:1px;margin:8px 0 2px;font-weight:600}.r-agt{border:1px solid #16A34A;padding:6px;text-align:center;color:#16A34A;margin:10px 0;font-size:9pt}.r-foot{text-align:center;font-size:7pt;color:#aaa;margin-top:10px;line-height:1.7}</style>${lastInvoiceHTML}`;
+  pa.style.display='block';
+  setTimeout(()=>{window.print();pa.style.display='none';},100);
+}
+function closeInvoice(){document.getElementById('invoiceOverlay').classList.remove('open');}
+function newSale(){closeInvoice();cart=[];renderCart();document.getElementById('clientNIF').value='';document.getElementById('clientName').value='';}
+
+/* ══════════════════════════════════════════
+   HISTORY / RULES / SETTINGS
+══════════════════════════════════════════ */
+function renderHistory(){
+  document.getElementById('histCount').textContent=invoiceHistory.length+' emitidas';
+  const el=document.getElementById('historyList');
+  if(!invoiceHistory.length){el.innerHTML='<div style="padding:36px;text-align:center;color:var(--text4);font-size:13px">Nenhuma factura emitida ainda</div>';return;}
+  el.innerHTML=invoiceHistory.map((h,i)=>`<div class="hist-row" onclick="viewInv(${i})"><div class="hist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div><div style="flex:1"><div class="hist-no">${h.no}</div><div class="hist-date">${h.dt}</div></div><div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);margin-right:10px">${fmt(h.total)}</div><span class="pill pill-green">✓</span></div>`).join('');
+}
+function viewInv(i){lastInvoiceHTML=invoiceHistory[i].html;document.getElementById('invoicePreview').innerHTML=invoiceHistory[i].html;document.getElementById('invoiceOverlay').classList.add('open');}
+
+function renderRules(){
+  document.getElementById('rulesList').innerHTML=RULES.map((r,i)=>`<div class="rule-item"><div class="rule-dot"><span>${String(i+1).padStart(2,'0')}</span></div><span style="font-size:12px;color:var(--text2)">${r}</span></div>`).join('');
+  document.getElementById('timeline').innerHTML=TIMELINE.map(t=>`<div class="tl-row"><span class="tl-badge ${t.done?'tl-done':'tl-next'}">${t.date}</span><div><div style="font-size:12px;color:var(--text2)">${t.desc}</div><div style="font-size:10px;font-weight:600;margin-top:2px;color:${t.done?'var(--green)':'var(--warn)'}">${t.done?'✓ Em vigor':'⏳ Próximo'}</div></div></div>`).join('');
+}
+
+function renderBarcodeList(){
+  document.getElementById('barcodeList').innerHTML=PRODUCTS.map((p,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="font-size:18px">${p.icon}</span><div style="flex:1"><div style="font-weight:600">${p.name}</div><div style="font-family:var(--mono);font-size:10px;color:var(--text4)">${p.bc}</div></div><div style="font-family:var(--mono);font-size:12px;color:var(--green);font-weight:600">${fmt(p.price)}</div></div>`).join('');
+}
+
+function saveSettings(){
+  settings.name=document.getElementById('setName').value;
+  settings.nif=document.getElementById('setNIF').value;
+  settings.addr=document.getElementById('setAddr').value;
+  settings.vat=document.getElementById('setVAT').value;
+  settings.serie=document.getElementById('setSerie').value;
+  document.getElementById('topSerie').textContent='AGT: '+settings.serie;
+  updateTotals();
+}
+
+function switchPanel(id,btn){
+  ['pos','history','rules','settings','calendar'].forEach(p=>document.getElementById('panel'+p[0].toUpperCase()+p.slice(1)).classList.remove('active'));
+  document.getElementById('panel'+id[0].toUpperCase()+id.slice(1)).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const titles={pos:['Ponto de Venda','Seleccione produtos ou leia o código de barras'],history:['Histórico de Facturas','Clique numa factura para ver ou reimprimir'],rules:['Regras AGT','Decreto Presidencial 71/25'],settings:['Configurações','Dados da empresa e configuração AGT'],calendar:['Calendário Fiscal','Obrigações fiscais AGT 2026 — prazos e alertas']};
+  if(titles[id]){document.getElementById('pageTitle').textContent=titles[id][0];document.getElementById('pageSub').textContent=titles[id][1];}
+  document.getElementById('searchWrap').style.display=id==='pos'?'flex':'none';
+  if(id==='history')renderHistory();
+  if(id==='rules')renderRules();
+  if(id==='settings')renderBarcodeList();
+  if(id==='calendar')renderCalendar();
+}
+
+
+/* ══════════════════════════════════════════
+   FISCAL CALENDAR — AGT 2026
+══════════════════════════════════════════ */
+const FISCAL_EVENTS = [
+  // Q1 2026
+  {date:'2026-01-10', title:'SAF-T Contabilístico — Dezembro 2025',    sub:'Entrega do ficheiro SAF-T relativo ao mês de Dezembro 2025.',         tags:['saft'],   quarter:'T1 2026'},
+  {date:'2026-01-20', title:'IVA — Declaração Mensal (Nov 2025)',       sub:'Declaração e pagamento do IVA referente a Novembro de 2025.',         tags:['iva'],    quarter:'T1 2026'},
+  {date:'2026-02-10', title:'SAF-T Contabilístico — Janeiro 2026',      sub:'Entrega do ficheiro SAF-T relativo ao mês de Janeiro.',               tags:['saft'],   quarter:'T1 2026'},
+  {date:'2026-02-15', title:'Inventário Anual 2025',                    sub:'Entrega do inventário de existências a 31/12/2025 à AGT.',            tags:['agt','inv'], quarter:'T1 2026'},
+  {date:'2026-02-20', title:'IVA — Declaração Mensal (Dez 2025)',       sub:'Declaração e pagamento do IVA referente a Dezembro de 2025.',         tags:['iva'],    quarter:'T1 2026'},
+  {date:'2026-03-10', title:'SAF-T Contabilístico — Fevereiro 2026',    sub:'Entrega do ficheiro SAF-T relativo ao mês de Fevereiro.',             tags:['saft'],   quarter:'T1 2026'},
+  {date:'2026-03-20', title:'IVA — Declaração Mensal (Jan 2026)',       sub:'Declaração e pagamento do IVA referente a Janeiro de 2026.',          tags:['iva'],    quarter:'T1 2026'},
+  // Q2 2026
+  {date:'2026-04-10', title:'SAF-T Contabilístico — Março 2026',        sub:'Entrega do ficheiro SAF-T relativo ao mês de Março.',                 tags:['saft'],   quarter:'T2 2026'},
+  {date:'2026-04-10', title:'SAF-T Anual — Exercício 2025',             sub:'Entrega do ficheiro SAF-T anual referente ao exercício de 2025. Prazo máximo: 10 de Abril.',tags:['saft','agt'],quarter:'T2 2026'},
+  {date:'2026-04-20', title:'IVA — Declaração Mensal (Fev 2026)',       sub:'Declaração e pagamento do IVA referente a Fevereiro de 2026.',        tags:['iva'],    quarter:'T2 2026'},
+  {date:'2026-05-10', title:'SAF-T Contabilístico — Abril 2026',        sub:'Entrega do ficheiro SAF-T relativo ao mês de Abril.',                 tags:['saft'],   quarter:'T2 2026'},
+  {date:'2026-05-20', title:'IVA — Declaração Mensal (Mar 2026)',       sub:'Declaração e pagamento do IVA referente a Março de 2026.',            tags:['iva'],    quarter:'T2 2026'},
+  {date:'2026-06-10', title:'SAF-T Contabilístico — Maio 2026',         sub:'Entrega do ficheiro SAF-T relativo ao mês de Maio.',                  tags:['saft'],   quarter:'T2 2026'},
+  {date:'2026-06-20', title:'IVA — Declaração Mensal (Abr 2026)',       sub:'Declaração e pagamento do IVA referente a Abril de 2026.',            tags:['iva'],    quarter:'T2 2026'},
+  // Q3 2026 — CRITICAL: ALL taxpayers mandatory
+  {date:'2026-07-10', title:'SAF-T Contabilístico — Junho 2026',        sub:'Entrega do ficheiro SAF-T relativo ao mês de Junho.',                 tags:['saft'],   quarter:'T3 2026'},
+  {date:'2026-07-20', title:'IVA — Declaração Mensal (Mai 2026)',       sub:'Declaração e pagamento do IVA referente a Maio de 2026.',             tags:['iva'],    quarter:'T3 2026'},
+  {date:'2026-08-10', title:'SAF-T Contabilístico — Julho 2026',        sub:'Entrega do ficheiro SAF-T relativo ao mês de Julho.',                 tags:['saft'],   quarter:'T3 2026'},
+  {date:'2026-08-20', title:'IVA — Declaração Mensal (Jun 2026)',       sub:'Declaração e pagamento do IVA referente a Junho de 2026.',            tags:['iva'],    quarter:'T3 2026'},
+  {date:'2026-09-01', title:'🔴 PRAZO OBRIGATÓRIO — Todos os Contribuintes',sub:'Todos os contribuintes (Regime Geral e Simplificado) ficam obrigados à facturação electrónica certificada AGT. Decreto Presidencial 71/25.',tags:['agt'],quarter:'T3 2026'},
+  {date:'2026-09-10', title:'SAF-T Contabilístico — Agosto 2026',       sub:'Entrega do ficheiro SAF-T relativo ao mês de Agosto.',                tags:['saft'],   quarter:'T3 2026'},
+  {date:'2026-09-20', title:'IVA — Declaração Mensal (Jul 2026)',       sub:'Declaração e pagamento do IVA referente a Julho de 2026.',            tags:['iva'],    quarter:'T3 2026'},
+  // Q4 2026
+  {date:'2026-10-10', title:'SAF-T Contabilístico — Setembro 2026',     sub:'Entrega do ficheiro SAF-T relativo ao mês de Setembro.',              tags:['saft'],   quarter:'T4 2026'},
+  {date:'2026-10-20', title:'IVA — Declaração Mensal (Ago 2026)',       sub:'Declaração e pagamento do IVA referente a Agosto de 2026.',           tags:['iva'],    quarter:'T4 2026'},
+  {date:'2026-11-10', title:'SAF-T Contabilístico — Outubro 2026',      sub:'Entrega do ficheiro SAF-T relativo ao mês de Outubro.',               tags:['saft'],   quarter:'T4 2026'},
+  {date:'2026-11-20', title:'IVA — Declaração Mensal (Set 2026)',       sub:'Declaração e pagamento do IVA referente a Setembro de 2026.',         tags:['iva'],    quarter:'T4 2026'},
+  {date:'2026-12-10', title:'SAF-T Contabilístico — Novembro 2026',     sub:'Entrega do ficheiro SAF-T relativo ao mês de Novembro.',              tags:['saft'],   quarter:'T4 2026'},
+  {date:'2026-12-20', title:'IVA — Declaração Mensal (Out 2026)',       sub:'Declaração e pagamento do IVA referente a Outubro de 2026.',          tags:['iva'],    quarter:'T4 2026'},
+  // 2027 early
+  {date:'2027-01-01', title:'Meta Final — Cobertura Total Angola',       sub:'Meta final do Decreto 71/25 — todos os sectores económicos em regime de facturação electrónica certificada.',tags:['agt'],quarter:'2027'},
+  {date:'2027-01-10', title:'SAF-T Contabilístico — Dezembro 2026',     sub:'Entrega do ficheiro SAF-T relativo ao mês de Dezembro 2026.',         tags:['saft'],   quarter:'2027'},
+  {date:'2027-02-15', title:'Inventário Anual 2026',                    sub:'Entrega do inventário de existências a 31/12/2026 à AGT.',            tags:['agt','inv'],quarter:'2027'},
+  {date:'2027-04-10', title:'SAF-T Anual — Exercício 2026',             sub:'Entrega obrigatória do SAF-T anual do exercício 2026.',               tags:['saft','agt'],quarter:'2027'},
+];
+
+const TAG_LABELS = {agt:'AGT',iva:'IVA',saft:'SAF-T',inv:'Inventário',irt:'IRT',done:'Concluído'};
+const TAG_CLASSES = {agt:'cal-tag-agt',iva:'cal-tag-iva',saft:'cal-tag-saft',inv:'cal-tag-inv',irt:'cal-tag-irt',done:'cal-tag-done'};
+const MONTHS_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function getEventStatus(dateStr){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const evDate = new Date(dateStr);
+  const diffDays = Math.ceil((evDate - today) / 86400000);
+  if(diffDays < 0) return {status:'done', days: diffDays};
+  if(diffDays <= 7)  return {status:'urgent', days: diffDays};
+  if(diffDays <= 30) return {status:'soon', days: diffDays};
+  return {status:'future', days: diffDays};
+}
+
+function renderCalendar(){
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Count upcoming events
+  let urgentCount=0, soonCount=0, doneCount=0;
+  FISCAL_EVENTS.forEach(e=>{
+    const {status}=getEventStatus(e.date);
+    if(status==='done') doneCount++;
+    else if(status==='urgent') urgentCount++;
+    else if(status==='soon') soonCount++;
+  });
+
+  // Alerts
+  const alertsEl = document.getElementById('calAlerts');
+  let alerts = '';
+  if(urgentCount>0){
+    alerts += `<div class="cal-alert danger"><div class="cal-alert-icon">🚨</div><div><div class="cal-alert-title">${urgentCount} prazo${urgentCount>1?'s':''} a vencer esta semana!</div><div class="cal-alert-sub">Verifique os prazos marcados a vermelho abaixo e tome as acções necessárias.</div></div></div>`;
+  }
+  // Always show the Sep 2026 mandatory deadline alert
+  const sepDiff = Math.ceil((new Date('2026-09-01') - today) / 86400000);
+  if(sepDiff > 0 && sepDiff <= 120){
+    alerts += `<div class="cal-alert warn"><div class="cal-alert-icon">⚠️</div><div><div class="cal-alert-title">Prazo obrigatório AGT em ${sepDiff} dias — 1 Set 2026</div><div class="cal-alert-sub">A partir de 1 de Setembro de 2026, todos os contribuintes ficam obrigados à facturação electrónica certificada pela AGT. Certifique-se de que o seu software está certificado.</div></div></div>`;
+  } else if(sepDiff > 0){
+    alerts += `<div class="cal-alert info"><div class="cal-alert-icon">📋</div><div><div class="cal-alert-title">Facturação electrónica obrigatória: 1 Set 2026 (em ${sepDiff} dias)</div><div class="cal-alert-sub">Decreto Presidencial 71/25 — todos os contribuintes em Regime Geral e Simplificado.</div></div></div>`;
+  }
+  alertsEl.innerHTML = alerts;
+
+  // Summary cards
+  document.getElementById('calSummary').innerHTML = `
+    <div class="cal-sum-card ${urgentCount>0?'urgent':'ok'}">
+      <div class="cal-sum-icon">${urgentCount>0?'🚨':'✅'}</div>
+      <div class="cal-sum-num ${urgentCount>0?'urgent':'ok'}">${urgentCount}</div>
+      <div class="cal-sum-lbl">Esta semana</div>
+    </div>
+    <div class="cal-sum-card ${soonCount>0?'soon':'ok'}">
+      <div class="cal-sum-icon">📅</div>
+      <div class="cal-sum-num ${soonCount>0?'soon':'ok'}">${soonCount}</div>
+      <div class="cal-sum-lbl">Próx. 30 dias</div>
+    </div>
+    <div class="cal-sum-card ok">
+      <div class="cal-sum-icon">✔</div>
+      <div class="cal-sum-num ok">${doneCount}</div>
+      <div class="cal-sum-lbl">Concluídos</div>
+    </div>`;
+
+  // Group by quarter
+  const quarters = {};
+  FISCAL_EVENTS.forEach(e=>{
+    if(!quarters[e.quarter]) quarters[e.quarter]=[];
+    quarters[e.quarter].push(e);
+  });
+
+  let calHTML = '';
+  Object.keys(quarters).forEach(q=>{
+    calHTML += `<div class="cal-month-group"><div class="cal-quarter-label">${q}</div>`;
+    quarters[q].forEach(e=>{
+      const {status, days} = getEventStatus(e.date);
+      const d = new Date(e.date);
+      const dayNum = d.getDate();
+      const monStr = MONTHS_PT[d.getMonth()];
+
+      // Countdown display
+      let cdHTML='';
+      if(status==='done'){
+        cdHTML=`<div class="cal-countdown"><div class="cal-cd-done">✓</div></div>`;
+      } else if(status==='urgent'){
+        cdHTML=`<div class="cal-countdown"><div class="cal-cd-num urgent">${days}d</div><div class="cal-cd-lbl">URGENTE</div></div>`;
+      } else if(status==='soon'){
+        cdHTML=`<div class="cal-countdown"><div class="cal-cd-num soon">${days}d</div><div class="cal-cd-lbl">em breve</div></div>`;
+      } else {
+        cdHTML=`<div class="cal-countdown"><div class="cal-cd-num future">${days}d</div><div class="cal-cd-lbl">restantes</div></div>`;
+      }
+
+      // Tags
+      let tagsHTML = e.tags.map(t=>`<span class="cal-tag ${TAG_CLASSES[t]||'cal-tag-agt'}">${TAG_LABELS[t]||t.toUpperCase()}</span>`).join('');
+      if(status==='done') tagsHTML += `<span class="cal-tag cal-tag-done">Concluído</span>`;
+
+      calHTML += `
+        <div class="cal-event status-${status}">
+          <div class="cal-date-box">
+            <div class="cal-date-day">${String(dayNum).padStart(2,'0')}</div>
+            <div class="cal-date-month">${monStr}</div>
+          </div>
+          <div class="cal-event-body">
+            <div class="cal-event-title">${e.title}</div>
+            <div class="cal-event-sub">${e.sub}</div>
+            <div class="cal-event-tags">${tagsHTML}</div>
+          </div>
+          ${cdHTML}
+        </div>`;
+    });
+    calHTML += '</div>';
+  });
+
+  document.getElementById('calBody').innerHTML = calHTML;
+}
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ══════════════════════════════════════════
+   BARCODE SCANNER
+══════════════════════════════════════════ */
+let scanStream=null, scanAF=null, scanCooldown=false, scanPaused=false;
+let lastScanned=null, facingMode='environment', torchOn=false, bdDetector=null;
+let scannerContext='manual'; // 'manual' | 'payment'
+
+function startPaymentFlow(){
+  // If cart already has items, give choice: scan more or go straight to invoice
+  if(cart.length > 0){
+    openScanner('payment');
+  } else {
+    // Empty cart — open scanner to fill it
+    openScanner('payment');
+  }
+}
+
+function finishPaymentScan(){
+  closeScanner();
+  // Small delay so scanner closes smoothly then invoice fires
+  setTimeout(()=>{ processPayment(); }, 150);
+}
+
+function openScanner(ctx='manual'){
+  scannerContext=ctx;
+  scanCooldown=false; scanPaused=false; lastScanned=null;
+
+  // context badge
+  const ctxEl=document.getElementById('scanContext');
+  const ctxTxt=document.getElementById('scanContextText');
+  if(ctx==='payment'){
+    ctxEl.classList.remove('hidden');
+    ctxTxt.textContent='Pagamento em progresso — leia os produtos que o cliente quer pagar';
+    document.getElementById('payDoneBar').style.display='block';
+    updatePayDoneCount();
+    // Show skip button
+    const skipBtn = document.getElementById('skipScanBtn');
+    if(skipBtn) skipBtn.style.display='block';
+  } else {
+    ctxEl.classList.add('hidden');
+    document.getElementById('payDoneBar').style.display='none';
+    const skipBtn = document.getElementById('skipScanBtn');
+    if(skipBtn) skipBtn.style.display='none';
+  }
+
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanNF').classList.remove('show');
+  document.getElementById('manualInput').value='';
+  document.getElementById('scanOverlay').classList.add('open');
+  setScanStatus('idle','A iniciar câmera...');
+  document.getElementById('scanPerm').classList.remove('show');
+
+  // init BarcodeDetector
+  if('BarcodeDetector' in window){
+    BarcodeDetector.getSupportedFormats().then(fmts=>{
+      bdDetector=new BarcodeDetector({formats:fmts.length?fmts:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code']});
+      initCamera();
+    }).catch(()=>{
+      bdDetector=new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','qr_code']});
+      initCamera();
+    });
+  } else {
+    bdDetector=null;
+    initCamera();
+  }
+}
+
+function initCamera(){
+  document.getElementById('scanPerm').classList.remove('show');
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facingMode},width:{ideal:1920},height:{ideal:1080}}})
+    .then(stream=>{
+      scanStream=stream;
+      const v=document.getElementById('scanVideo');
+      v.srcObject=stream;
+      v.onloadedmetadata=()=>{
+        v.play();
+        setScanStatus('active',bdDetector?'Câmera activa — aponte para o código de barras':'Câmera activa — BarcodeDetector indisponível, use a entrada manual');
+        if(bdDetector)startScanLoop();
+      };
+    })
+    .catch(err=>{
+      console.warn('Camera:',err);
+      document.getElementById('scanPerm').classList.add('show');
+      setScanStatus('err','Sem acesso à câmera — use a entrada manual abaixo');
+    });
+}
+function startCamera(){document.getElementById('scanPerm').classList.remove('show');initCamera();}
+
+function startScanLoop(){
+  const v=document.getElementById('scanVideo');
+  const c=document.getElementById('scanCanvas');
+  const ctx=c.getContext('2d');
+  function tick(){
+    if(!scanStream)return;
+    if(!scanPaused && v.readyState===v.HAVE_ENOUGH_DATA && !scanCooldown){
+      c.width=v.videoWidth; c.height=v.videoHeight;
+      ctx.drawImage(v,0,0);
+      bdDetector.detect(c).then(codes=>{
+        if(codes.length){handleBarcode(codes[0].rawValue);}
+      }).catch(()=>{});
+    }
+    scanAF=requestAnimationFrame(tick);
+  }
+  scanAF=requestAnimationFrame(tick);
+}
+
+/* ── HANDLE A SCANNED CODE ── */
+function handleBarcode(code){
+  if(scanCooldown)return;
+  scanCooldown=true;
+
+  // Flash corners green
+  const box=document.getElementById('scanBox');
+  box.style.setProperty('--scan-color','#4ade80');
+  setTimeout(()=>box.style.removeProperty('--scan-color'),400);
+
+  const idx=BC_MAP[code];
+  if(idx!==undefined){
+    showScanResult(PRODUCTS[idx],code,idx);
+  } else {
+    showScanNF(code);
+  }
+  setTimeout(()=>{scanCooldown=false;},1800);
+}
+
+function showScanResult(p,code,idx){
+  lastScanned={p,idx};
+  document.getElementById('scanNF').classList.remove('show');
+  document.getElementById('srEmo').textContent=p.icon;
+  document.getElementById('srName').textContent=p.name;
+  document.getElementById('srCat').textContent=p.cat;
+  document.getElementById('srPrice').textContent=fmt(p.price);
+  document.getElementById('srBc').textContent='# '+code;
+  document.getElementById('scanResult').classList.add('show');
+  setScanStatus('ok','✓ Encontrado: <strong>'+p.name+'</strong>');
+  if(navigator.vibrate)navigator.vibrate([40,20,40]);
+
+  // AUTO-ADD in payment context — add directly and keep scanning
+  if(scannerContext==='payment'){
+    addToCart(idx);
+    updatePayDoneCount();
+    showToast('✓ '+p.name+' adicionado');
+    setTimeout(()=>{
+      document.getElementById('scanResult').classList.remove('show');
+      lastScanned=null;
+      setScanStatus('active','Produto adicionado! Continue a ler...');
+    },900);
+  }
+}
+
+function showScanNF(code){
+  lastScanned=null;
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('nfCode').textContent=code;
+  document.getElementById('scanNF').classList.add('show');
+  document.getElementById('manualInput').value=code;
+  setScanStatus('err','Código <strong>'+code+'</strong> não encontrado');
+  if(navigator.vibrate)navigator.vibrate(200);
+}
+
+/* manually add scanned product (manual mode) */
+function addScanned(){
+  if(!lastScanned)return;
+  addToCart(lastScanned.idx);
+  showToast('✓ '+lastScanned.p.name+' adicionado');
+  document.getElementById('scanResult').classList.remove('show');
+  lastScanned=null;
+  setScanStatus('active','Produto adicionado! Continue a ler...');
+  scanCooldown=true;
+  setTimeout(()=>{scanCooldown=false;},1500);
+}
+
+function lookupManual(){
+  const code=document.getElementById('manualInput').value.trim();
+  if(!code)return;
+  handleBarcode(code);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('manualInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')lookupManual();});
+});
+
+function setScanStatus(state,msg){
+  const d=document.getElementById('scanDot');
+  const t=document.getElementById('scanStatusTxt');
+  d.className='scan-dot'+(state==='active'?' active':state==='ok'?' ok':state==='err'?' err':'');
+  t.innerHTML=msg;
+}
+
+function toggleTorch(){
+  if(!scanStream)return;
+  const track=scanStream.getVideoTracks()[0];
+  if(!track)return;
+  torchOn=!torchOn;
+  track.applyConstraints({advanced:[{torch:torchOn}]})
+    .then(()=>{const b=document.getElementById('torchBtn');b.style.color=torchOn?'#fde047':'';b.style.borderColor=torchOn?'rgba(253,224,71,.4)':'';})
+    .catch(()=>showToast('⚠ Lanterna não suportada'));
+}
+
+function flipCamera(){facingMode=facingMode==='environment'?'user':'environment';stopCamera();initCamera();}
+
+function stopCamera(){
+  if(scanAF){cancelAnimationFrame(scanAF);scanAF=null;}
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  const v=document.getElementById('scanVideo');if(v)v.srcObject=null;
+  torchOn=false;
+}
+
+function closeScanner(){
+  stopCamera();
+  document.getElementById('scanOverlay').classList.remove('open');
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanNF').classList.remove('show');
+  lastScanned=null; scanCooldown=false; scanPaused=false;
+}
+
+/* ══════════════════════════════════════════
+   PWA
+══════════════════════════════════════════ */
+let deferredPrompt=null;
+
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  navigator.serviceWorker.register('./sw.js')
+    .then(r=>console.log('SW registered',r.scope))
+    .catch(e=>console.warn('SW registration failed:',e));
+}
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('installBanner').classList.add('show');
+  document.getElementById('navInstall').classList.add('show');
+});
+
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').classList.remove('show');
+  document.getElementById('navInstall').classList.remove('show');
+  showToast('✓ Ledgera instalado com sucesso!');
+  deferredPrompt=null;
+});
+
+function installPWA(){
+  if(!deferredPrompt){
+    showToast('ℹ Para instalar: Menu do browser → "Adicionar ao ecrã inicial"');
+    return;
+  }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(c=>{
+    if(c.outcome==='accepted')showToast('✓ A instalar Ledgera...');
+    deferredPrompt=null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+
+function dismissInstall(){
+  document.getElementById('installBanner').classList.remove('show');
+}
+
+/* ══════════════════════════════════════════
+   PAYMENT SCAN HELPERS
+══════════════════════════════════════════ */
+function updatePayDoneCount(){
+  const total = cart.reduce((s,c)=>s+c.qty,0);
+  const el = document.getElementById('payDoneCount');
+  if(el) el.textContent = total + ' item' + (total!==1?'s':'');
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderProducts();
+renderCart();
+updateTotals();
+updatePayBtn();
+</script>
+</body>
+</html>
